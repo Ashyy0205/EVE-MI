@@ -26,6 +26,7 @@ else:
 
 class VisionSystem:
     def __init__(self):
+        print("[DIAG] VisionSystem.__init__ called")
         self.logger = logging.getLogger("BotLogger")
         # MSS is not thread-safe if shared across threads. 
         # We will initialize it inside capture_screen or use a thread-local storage if needed.
@@ -33,6 +34,16 @@ class VisionSystem:
         # However, creating it every time is slow.
         # The error suggests we are accessing it from a different thread than where it was created.
         self.sct = None
+        print("[DIAG] VisionSystem.__init__ finished")
+
+    def cleanup(self):
+        if self.sct is not None:
+            try:
+                if hasattr(self.sct, 'close'):
+                    self.sct.close()
+            except Exception:
+                pass
+            self.sct = None
 
     def capture_screen(self, region=None):
         """

@@ -18,6 +18,7 @@ class BotState(Enum):
 
 class MiningBot:
     def __init__(self, vision_system, input_controller):
+        print("[DIAG] MiningBot.__init__ called")
         self.vision = vision_system
         self.input = input_controller
         self.logger = logging.getLogger("BotLogger")
@@ -36,39 +37,62 @@ class MiningBot:
         self.approach_command_sent = False # Track if we have already clicked approach
         self.scan_fail_count = 0 # Track consecutive scan failures
         # self.mining_duration = 60 # No longer used with new logic
+        print("[DIAG] MiningBot.__init__ finished")
 
     def load_config(self):
-        default_overview = (800, 100, 400, 600)
-        default_selected = (100, 100, 200, 200)
-        default_inv_pt = (0, 0)
-        default_tooltip = (0, 0, 0, 0)
-        default_dropoff = (0, 0, 0, 0)
-        default_inv_window = (0, 0, 0, 0)
-        default_warp_status = (0, 0, 0, 0)
-        default_undock = (0, 0, 0, 0)
-        
-        if os.path.exists('config.json'):
-            try:
-                with open('config.json', 'r') as f:
-                    data = json.load(f)
-                    overview = tuple(data.get('overview_region', default_overview))
-                    selected = tuple(data.get('selected_item_region', default_selected))
-                    inv_pt = tuple(data.get('inventory_hover_point', default_inv_pt))
-                    tooltip = tuple(data.get('tooltip_region', default_tooltip))
-                    dropoff = tuple(data.get('dropoff_list_region', default_dropoff))
-                    inv_window = tuple(data.get('inventory_window_region', default_inv_window))
-                    warp_status = tuple(data.get('warp_status_region', default_warp_status))
-                    undock = tuple(data.get('undock_region', default_undock))
-                    
-                    self.logger.info(f"Loaded config.")
-                    return overview, selected, inv_pt, tooltip, dropoff, inv_window, warp_status, undock
-            except Exception as e:
-                self.logger.error(f"Failed to load config: {e}")
-        
-        self.logger.warning("Config not found. Using defaults.")
-        return default_overview, default_selected, default_inv_pt, default_tooltip, default_dropoff, default_inv_window, default_warp_status, default_undock
+        print("[DIAG] MiningBot.load_config called")
+        try:
+            default_overview = (800, 100, 400, 600)
+            default_selected = (100, 100, 200, 200)
+            default_inv_pt = (0, 0)
+            default_tooltip = (0, 0, 0, 0)
+            default_dropoff = (0, 0, 0, 0)
+            default_inv_window = (0, 0, 0, 0)
+            default_warp_status = (0, 0, 0, 0)
+            default_undock = (0, 0, 0, 0)
+            print("[DIAG] Checking for config.json existence")
+            if os.path.exists('config.json'):
+                try:
+                    print("[DIAG] Opening config.json")
+                    with open('config.json', 'r') as f:
+                        print("[DIAG] Reading config.json")
+                        data = json.load(f)
+                        print("[DIAG] Loaded config.json data")
+                        overview = tuple(data.get('overview_region', default_overview))
+                        print(f"[DIAG] overview_region: {overview}")
+                        selected = tuple(data.get('selected_item_region', default_selected))
+                        print(f"[DIAG] selected_item_region: {selected}")
+                        inv_pt = tuple(data.get('inventory_hover_point', default_inv_pt))
+                        print(f"[DIAG] inventory_hover_point: {inv_pt}")
+                        tooltip = tuple(data.get('tooltip_region', default_tooltip))
+                        print(f"[DIAG] tooltip_region: {tooltip}")
+                        dropoff = tuple(data.get('dropoff_list_region', default_dropoff))
+                        print(f"[DIAG] dropoff_list_region: {dropoff}")
+                        inv_window = tuple(data.get('inventory_window_region', default_inv_window))
+                        print(f"[DIAG] inventory_window_region: {inv_window}")
+                        warp_status = tuple(data.get('warp_status_region', default_warp_status))
+                        print(f"[DIAG] warp_status_region: {warp_status}")
+                        undock = tuple(data.get('undock_region', default_undock))
+                        print(f"[DIAG] undock_region: {undock}")
+                        self.logger.info(f"Loaded config.")
+                        print("[DIAG] MiningBot.load_config finished")
+                        return overview, selected, inv_pt, tooltip, dropoff, inv_window, warp_status, undock
+                except Exception as e:
+                    print(f"[DIAG][ERROR] Exception in config.json loading: {e}")
+                    self.logger.error(f"Failed to load config: {e}")
+                    raise e # Re-raise exception to be caught by outer try-except
+            print("[DIAG] Config not found, using defaults")
+            self.logger.warning("Config not found. Using defaults.")
+            return default_overview, default_selected, default_inv_pt, default_tooltip, default_dropoff, default_inv_window, default_warp_status, default_undock
+        except Exception as e:
+            import traceback
+            tb = traceback.format_exc()
+            print(f"[DIAG][ERROR] Exception in MiningBot.load_config: {e}\n{tb}")
+            self.logger.error(f"Exception in load_config: {e}\n{tb}")
+            raise
 
     def start(self):
+        print("[DIAG] MiningBot.start called")
         self.running = True
         self.logger.info("Bot started. Checking initial state...")
         
@@ -97,8 +121,13 @@ class MiningBot:
         self.running = False
         self.state = BotState.IDLE
         self.logger.info("Bot stopped.")
+        if hasattr(self.vision, 'cleanup'):
+            self.vision.cleanup()
+        if hasattr(self.input, 'cleanup'):
+            self.input.cleanup()
 
     def update(self):
+        print("[DIAG] MiningBot.update called")
         if not self.running:
             return
 
@@ -743,3 +772,53 @@ class MiningBot:
             
         self.logger.info("Travel complete. Resuming mining operations.")
         self.state = BotState.SCANNING
+
+    def _load_config_impl(self):
+        print("[DIAG] MiningBot._load_config_impl called")
+        try:
+            default_overview = (800, 100, 400, 600)
+            default_selected = (100, 100, 200, 200)
+            default_inv_pt = (0, 0)
+            default_tooltip = (0, 0, 0, 0)
+            default_dropoff = (0, 0, 0, 0)
+            default_inv_window = (0, 0, 0, 0)
+            default_warp_status = (0, 0, 0, 0)
+            default_undock = (0, 0, 0, 0)
+            
+            if os.path.exists('config.json'):
+                try:
+                    with open('config.json', 'r') as f:
+                        data = json.load(f)
+                        overview = tuple(data.get('overview_region', default_overview))
+                        selected = tuple(data.get('selected_item_region', default_selected))
+                        inv_pt = tuple(data.get('inventory_hover_point', default_inv_pt))
+                        tooltip = tuple(data.get('tooltip_region', default_tooltip))
+                        dropoff = tuple(data.get('dropoff_list_region', default_dropoff))
+                        inv_window = tuple(data.get('inventory_window_region', default_inv_window))
+                        warp_status = tuple(data.get('warp_status_region', default_warp_status))
+                        undock = tuple(data.get('undock_region', default_undock))
+                        
+                        self.logger.info(f"Loaded config.")
+                        print("[DIAG] MiningBot._load_config_impl finished")
+                        return (
+                            self.overview_region,
+                            self.selected_item_region,
+                            self.inventory_hover_point,
+                            self.tooltip_region,
+                            self.dropoff_list_region,
+                            self.inventory_window_region,
+                            self.warp_status_region,
+                            self.undock_region
+                        )
+                except Exception as e:
+                    self.logger.error(f"Failed to load config: {e}")
+                    raise e # Re-raise exception to be caught by outer try-except
+            
+            self.logger.warning("Config not found. Using defaults.")
+            return default_overview, default_selected, default_inv_pt, default_tooltip, default_dropoff, default_inv_window, default_warp_status, default_undock
+        except Exception as e:
+            import traceback
+            tb = traceback.format_exc()
+            print(f"[DIAG][ERROR] Exception in MiningBot._load_config_impl: {e}\n{tb}")
+            self.logger.error(f"Exception in _load_config_impl: {e}\n{tb}")
+            raise

@@ -7,11 +7,17 @@ pyautogui.FAILSAFE = True
 
 class InputController:
     def __init__(self):
+        print("[DIAG] InputController.__init__ called")
         self.logger = logging.getLogger("BotLogger")
         pyautogui.PAUSE = 0.1 # Short pause after each action
         # Disable failsafe because negative coordinates on multi-monitor setups can trigger it falsely
         pyautogui.FAILSAFE = False 
         self.safe_spot = (200, 200)
+        print("[DIAG] InputController.__init__ finished")
+
+    def cleanup(self):
+        # Placeholder for future resource cleanup if needed
+        pass
 
     def move_to_safe_spot(self):
         """
