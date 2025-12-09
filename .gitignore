@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# PyInstaller
+/dist/
+/build/
+*.spec
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Tesseract
+Tesseract-OCR/
+
+# Misc
+*.bak
+*.tmp
+
+# Test
+coverage/
+*.cover
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
