@@ -1,0 +1,42 @@
+{
+    "overview_region": [
+        1536,
+        204,
+        383,
+        297
+    ],
+    "selected_item_region": [
+        1403,
+        0,
+        132,
+        137
+    ],
+    "inventory_hover_point": [
+        316,
+        785
+    ],
+    "tooltip_region": [
+        245,
+        721,
+        191,
+        51
+    ],
+    "dropoff_list_region": [
+        36,
+        418,
+        354,
+        333
+    ],
+    "inventory_window_region": [
+        38,
+        749,
+        465,
+        331
+    ],
+    "warp_status_region": [
+        766,
+        748,
+        399,
+        139
+    ]
+}

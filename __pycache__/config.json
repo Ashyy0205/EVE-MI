@@ -1,0 +1,26 @@
+{
+    "overview_region": [
+        3457,
+        217,
+        383,
+        204
+    ],
+    "selected_item_region": [
+        3318,
+        0,
+        137,
+        153
+    ],
+    "inventory_bar_region": [
+        2247,
+        781,
+        8,
+        6
+    ],
+    "tooltip_region": [
+        2177,
+        722,
+        172,
+        50
+    ]
+}
