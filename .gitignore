@@ -10,10 +10,20 @@ __pycache__/
 venv/
 ENV/
 
+
 # PyInstaller
-/dist/
-/build/
+dist/
+build/
 *.spec
+
+# Exclude all executables and package files
+*.exe
+*.pkg
+
+# Exclude virtual environment
+.venv/
+venv/
+ENV/
 
 # IDE
 .vscode/
